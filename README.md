@@ -174,6 +174,7 @@ Detectează construirea nesigură a interogărilor SQL prin concatenare de șiru
     r"executeQuery\(.*\+",
     # ... alte modele
 ]
+```
 
 
 
