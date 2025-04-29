@@ -176,6 +176,203 @@ Detectează construirea nesigură a interogărilor SQL prin concatenare de șiru
 ]
 ```
 
+### Cross-Site Scripting (XSS) - Identifică manipularea nesigură a DOM-ului și execuția de cod dinamic 
+```python
+"patterns": [
+    r"innerHTML\s*=",
+    r"document\.write\(",
+    # ... alte modele
+]
+```
+
+### Probleme de autentificare - Găsește credențiale hardcodate și configurări nesigure de autentificare 
+```python
+"patterns": [
+    r"password\s*=\s*\"[^\"]+\"",
+    r"hardcoded.*password",
+    # ... alte modele
+]
+```
+
+### Bypass-uri de autorizare - Detectează modificări nesigure ale rolurilor și permisiunilor
+```python
+"patterns": [
+    r"\.Authorize\(.*false\)",
+    r"isAdmin\s*=\s*true",
+    # ... alte modele
+]
+```
+
+### Referințe directe nesigure la obiecte - Identifică accesarea directă a obiectelor fără verificare
+```python
+"patterns": [
+    r"Request\.QueryString\[\"id\"\]",
+    r"Request\.Params\[\"id\"\]",
+    # ... alte modele
+]
+```
+
+### Configurări greșite de securitate - Găsește setări de debug active sau configurări HTTPS/SSL dezactivate
+```python
+"patterns": [
+    r"debug\s*=\s*true",
+    r"IsDebug\s*=\s*true",
+    # ... alte modele
+]
+```
+
+### Expunere de date sensibile - Detectează utilizarea algoritmilor criptografici slabi sau manipularea datelor sensibile
+```python
+"patterns": [
+    r"\.CreateEncryptor\(",
+    r"MD5\.",
+    # ... alte modele
+]
+```
+
+### Lipsă control acces la nivel de funcție - Identifică potențiale probleme în verificarea accesului
+```python
+"patterns": [
+    r"\.IsAdmin\(\)",
+    r"UserManager\.",
+    # ... alte modele
+]
+```
+
+### Cross-Site Request Forgery (CSRF) - Găsește endpoint-uri vulnerabile la CSRF
+```python
+"patterns": [
+    r"\[HttpPost\](?!.*(?:\[ValidateAntiForgeryToken\]|\[AutoValidateAntiforgeryToken\]))",
+    # ... alte modele
+]
+```
+
+### Utilizarea componentelor cu vulnerabilități cunoscute - Detectează versiuni vechi și vulnerabile ale bibliotecilor comune
+```python
+"patterns": [
+    r"jQuery.{0,10}[\"']1\.[0-9]\.[0-9][\"']",
+    r"bootstrap.{0,10}[\"']2\.[0-9]\.[0-9][\"']",
+    # ... alte modele
+]
+```
+
+Fiecare vulnerabilitate este evaluată pe o scară de risc cu 5 niveluri:
+RISK_LEVELS = {
+    0: "Sigur",
+    1: "Scăzut",
+    2: "Mediu",
+    3: "Ridicat",
+    4: "Critic"
+}
+
+### Integrarea API-ului Flask cu aplicația .NET
+
+API-ul de analiză a vulnerabilităților a fost implementat ca un serviciu independent în Flask, care comunică cu aplicația principală .NET prin intermediul cererilor HTTP. Această arhitectură cu microservicii oferă flexibilitate și permite evoluția independentă a celor două componente.
+
+API-ul Flask oferă un endpoint REST *(/analyze)* care:
+- Primește cod sursă și (opțional) limbajul de programare
+- Aplică analiza bazată pe reguli
+- Aplică analiza bazată pe ML (dacă modelul este disponibil)
+- Combină rezultatele, eliminând duplicatele și ajustând nivelurile de încredere
+- Generează un raport detaliat cu vulnerabilitățile identificate, nivelurile de risc și recomandări pentru remediere
+
+### Structura aplicației .NET pentru scanarea de vulnerabilități
+
+Pentru a integra API-ul Flask în aplicația .NET, am implementat o structură modulară cu următoarele componente principale:
+├── Controllers/
+│   ├── ProjectScanController.cs
+│
+├── Services/
+│   ├── Vulnerability/
+│   │   ├── IVulnerabilityService.cs
+│   │   ├── VulnerabilityService.cs
+│   │   ├── VulnerabilityAnalysisResult.cs
+│   │
+│   ├── CodeScanner/
+│       ├── ICodeScannerService.cs
+│       ├── CodeScannerService.cs
+│       ├── FileVulnerabilityReport.cs
+│       ├── ProjectVulnerabilityReport.cs
+│
+├── Views/
+│   ├── ProjectScan/
+│       ├── Index.cshtml
+│       ├── ScanResults.cshtml
+│       ├── FileScanResult.cshtml
+│
+├── appsettings.json (configurare pentru API-ul de vulnerabilități)
+
+#### IVulnerabilityService & VulnerabilityService
+Serviciul de vulnerabilități din .NET acționează ca un client pentru API-ul Flask. Acesta gestionează comunicarea HTTP și transformarea datelor între cele două sisteme.
+
+#### CodeScannerService
+Serviciul de scanare a codului este responsabil pentru:
+- Identificarea fișierelor care trebuie scanate în proiect
+- Trimiterea fiecărui fișier către VulnerabilityService
+- Agregarea rezultatelor într-un raport complet al proiectului
+
+#### Controllerul și vizualizările
+Controllerul ProjectScanController expune funcționalitatea de scanare a vulnerabilităților în interfața web, permițând utilizatorilor să inițieze scanări și să vizualizeze rezultatele într-un format prietenos.
+
+### Fluxul de comunicare între componente
+
+Procesul complet de analiză a vulnerabilităților funcționează astfel:
+1. Utilizatorul accesează interfața web și inițiază o scanare de proiect
+2. Controllerul delegă scanarea către CodeScannerService
+3. CodeScannerService identifică fișierele relevante și le trimite pe rând către VulnerabilityService
+4. VulnerabilityService face cereri POST către API-ul Flask cu conținutul fiecărui fișier
+5. API-ul Flask analizează codul utilizând combinația de reguli și modelul ML
+6. Rezultatele analizei sunt trimise înapoi la VulnerabilityService
+7. CodeScannerService agregează rezultatele pentru toate fișierele
+8. Controllerul prezintă rezultatele utilizatorului prin intermediul vizualizărilor
+
+Această arhitectură modulară permite integrarea eficientă între aplicația .NET și API-ul Flask de analiză a vulnerabilităților, combinând avantajele ambelor tehnologii pentru a oferi o soluție completă de scanare a vulnerabilităților în codul sursă.
+
+### Rezultatele analizei
+
+Raportul generat include:
+- Numărul total de vulnerabilități identificate
+- Lista detaliată a vulnerabilităților cu:
+  - Tipul vulnerabilității
+  - Nivelul de încredere (confidence)
+  - Nivelul de risc
+  - Numerele liniilor afectate
+  - Recomandări specifice pentru remediere
+- Un rezumat statistic al vulnerabilităților pe niveluri de risc
+- Mențiunea tipului de analiză utilizat (hibridă sau doar bazată pe reguli)
+
+![Exemplu raport de vulnerabilități](media/image1.png)
+![Exemplu grafic riscuri](media/image2.png)
+
+### Integrarea cu conceptul teoretic VulnRISKatcher
+
+Implementarea noastră respectă principiile VulnRISKatcher prezentate în articolul științific:
+
+1. **Utilizarea tehnicilor ML pentru verificarea codului** - Implementat prin integrarea modelului
+
+2. **Suport pentru diverse limbaje de programare** - API-ul acceptă specificarea limbajului (deși regulile sunt optimizate pentru C#/.NET)
+
+3. **Pipeline de procesare structurat**:
+   - Furnizarea codului și limbajului de programare - prin endpoint-ul API
+   - Preprocesarea datelor - implementată prin divizarea codului în linii și segmente
+   - Analiza pentru identificarea tiparelor - realizată prin reguli și ML
+   - Clasificarea vulnerabilităților - prin sistemul de tipuri și niveluri de risc
+   - Generarea unui raport detaliat - în format JSON structurat
+
+4. **Identificarea și clasificarea riscurilor** - Realizată prin sistemul de evaluare cu 5 niveluri
+
+### Îmbunătățiri viitoare
+
+Pentru a extinde capabilitățile instrumentului, putem:
+
+1. Antrena modele mai specializate pentru diferite limbaje de programare
+2. Implementa detectarea bazată pe grafuri de dependențe pentru vulnerabilități mai complexe
+3. Adăuga analiza fluxului de date pentru identificarea mai precisă a vulnerabilităților
+4. Extinde baza de cunoștințe cu reguli pentru mai multe tipuri de vulnerabilități
+5. Integra cu sisteme de CI/CD pentru verificarea automată a securității
+
+În această implementare, am combinat cu succes abordarea bazată pe reguli cu tehnici de Machine Learning, reușind să construim un instrument practic care ilustrează conceptul teoretic de VulnRISKatcher prezentat în articolul științific.
+Poți copia acest cod Markdown și să-l adaugi direc
 
 
 
