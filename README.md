@@ -373,7 +373,6 @@ Pentru a extinde capabilitățile instrumentului, putem:
 5. Integra cu sisteme de CI/CD pentru verificarea automată a securității
 
 În această implementare, am combinat cu succes abordarea bazată pe reguli cu tehnici de Machine Learning, reușind să construim un instrument practic care ilustrează conceptul teoretic de VulnRISKatcher prezentat în articolul științific.
-Poți copia acest cod Markdown și să-l adaugi direc
 
 
 
