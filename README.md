@@ -277,7 +277,7 @@ API-ul Flask oferă un endpoint REST *(/analyze)* care:
 - Generează un raport detaliat cu vulnerabilitățile identificate, nivelurile de risc și recomandări pentru remediere
 
 ### Structura aplicației .NET pentru scanarea de vulnerabilități
-
+```python
 Pentru a integra API-ul Flask în aplicația .NET, am implementat o structură modulară cu următoarele componente principale:
 ├── Controllers/
 │   ├── ProjectScanController.cs
@@ -301,6 +301,7 @@ Pentru a integra API-ul Flask în aplicația .NET, am implementat o structură m
 │       ├── FileScanResult.cshtml
 │
 ├── appsettings.json (configurare pentru API-ul de vulnerabilități)
+```
 
 #### IVulnerabilityService & VulnerabilityService
 Serviciul de vulnerabilități din .NET acționează ca un client pentru API-ul Flask. Acesta gestionează comunicarea HTTP și transformarea datelor între cele două sisteme.
@@ -341,8 +342,8 @@ Raportul generat include:
 - Un rezumat statistic al vulnerabilităților pe niveluri de risc
 - Mențiunea tipului de analiză utilizat (hibridă sau doar bazată pe reguli)
 
-![Exemplu raport de vulnerabilități](media/image1.png)
-![Exemplu grafic riscuri](media/image2.png)
+![Exemplu raport de vulnerabilități](media/image1.webp)
+![Exemplu grafic riscuri](media/image2.webp)
 
 ### Integrarea cu conceptul teoretic VulnRISKatcher
 
