@@ -127,6 +127,57 @@ RESTler eficientizează testarea automată a API-urilor REST și poate identific
 
 ---
 
+## c. Implementarea celui de-al doilea modul -- VulnRISKatcher
+
+Așa cum reiese din articol, **VulnRISKatcher** este un instrument inovator pentru identificarea și clasificarea vulnerabilităților în codul sursă, utilizând tehnici avansate de Machine Learning. Spre deosebire de instrumentele tradiționale de revizuire a codului care folosesc abordări statice, VulnRISKatcher oferă o alternativă mai eficientă care nu necesită înțelegerea completă a contextului codului.
+
+### Caracteristici principale:
+
+1. **Utilizarea tehnicilor ML pentru verificarea codului** - Permite analiza codului fără a necesita contextul complet, făcând instrumentul aplicabil la diferite niveluri de testare.
+
+2. **Suport pentru diverse limbaje de programare** - Instrumentul analizează cod lexical din multiple limbaje de programare, crescând versatilitatea soluției.
+
+3. **Pipeline de procesare structurat** - Procesul include:
+   - Furnizarea codului și specificarea limbajului de programare
+   - Preprocesarea datelor (curățarea și divizarea în unități discrete)
+   - Analiza pentru identificarea tiparelor asociate vulnerabilităților
+   - Clasificarea vulnerabilităților identificate
+   - Generarea unui raport detaliat pentru utilizator
+
+4. **Identificarea și clasificarea riscurilor** - Pe lângă detectarea vulnerabilităților, instrumentul evaluează și riscurile asociate acestora.
+
+VulnRISKatcher reprezintă un pas important în evoluția instrumentelor de testare software, oferind o soluție mai rapidă și mai precisă pentru identificarea vulnerabilităților, contribuind astfel la îmbunătățirea calității software-ului și la reducerea costurilor de dezvoltare și mentenanță.
+
+### Proof of concept
+
+Pentru a ne apropia în practică de conceptul teoretic de VulnRISKatcher am decis să încercăm să folosim un model de Machine Learning, întrucât învățarea automată este una dintre caracteristicile care stau la baza conceptului.
+
+Am ales să folosim modele de pe HuggingFace și astfel am găsit modelul *microsoft/codebert-base*, care însă ar fi avut nevoie de fine-tuning, așa că am încercat să găsim un model deja fine-tunat. Acest lucru s-a dovedit a fi un task destul de complicat, dar în urma căutărilor am ajuns la două variante:
+
+1. *mahdin70/CodeBERT-VulnCWE* - antrenat pe un set de date curatoriat și îmbogățit pentru detectarea vulnerabilităților și clasificarea CWE. Modelul poate prezice dacă un fragment de cod este vulnerabil și, în caz afirmativ, poate identifica ID-ul CWE specific asociat. (părea o variantă promițătoare, dar am avut probleme cu importarea acestuia, deci am fost nevoiți să renunțăm)
+
+2. *mrm8488/codebert-base-finetuned-detect-insecure-code* - Modelul analizează secvențe de cod sursă pentru a determina dacă acestea conțin vulnerabilități de securitate (precum scurgeri de resurse sau atacuri DoS), clasificându-le binar ca sigure (0) sau nesigure (1). (deși ne oferă doar o clasificare binară a erorilor, acest model s-a dovedit a fi o variantă mai sigură și cu care am reușit să lucrăm)
+
+Deși modelul oferă doar o clasificare binară (cod sigur vs. cod nesigur), l-am integrat într-o analiză mai nuanțată. Pentru a face analiza mai detaliată, am implementat:
+
+- Analiza globală a codului pentru o evaluare generală a întregului fișier
+- Analiza pe secțiuni consecutive de cod (denumită "ferestre glisante" sau "sliding windows") - aceasta împarte codul în bucăți mai mici de câte 15 linii, care se suprapun parțial (cu 5 linii), pentru a identifica mai precis zonele problematice din cod
+
+Tot pentru a compensa limitarea clasificării binare a modelului ML, am implementat și un sistem extins de reguli bazat pe expresii regulate, care poate identifica zece categorii specifice de vulnerabilități:
+
+#### SQL Injection
+Detectează construirea nesigură a interogărilor SQL prin concatenare de șiruri
+
+```python
+"patterns": [
+    r"string\s+sql\s*=.*\+",
+    r"executeQuery\(.*\+",
+    # ... alte modele
+]
+
+
+
+
 ## 5. Concluzii
 
 **TestLab** propune o abordare integrată, inteligentă și automatizată pentru testarea software:
