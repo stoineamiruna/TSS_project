@@ -1,0 +1,193 @@
+﻿@model Developer_Toolbox.Services.CodeScanner.FileVulnerabilityReport
+@{
+    ViewData["Title"] = "File Vulnerability Results";
+
+    // Read the file content for display
+    string fileContent = System.IO.File.ReadAllText(Model.FilePath);
+    string[] fileLines = fileContent.Split(Environment.NewLine);
+}
+
+<div class="container-fluid">
+    <h2>File Vulnerability Analysis</h2>
+    <p class="lead">@Model.RelativePath</p>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Summary</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Total vulnerabilities:</strong> @Model.Result.TotalVulnerabilities</p>
+                            <p><strong>Analysis approach:</strong> @Model.Result.AnalysisApproach</p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                @if (((dynamic)Model.Result.Summary).critic > 0)
+                                {
+                                    <div class="col-md-3">
+                                        <div class="alert alert-danger text-center">
+                                            <strong>Critical</strong>
+                                            <h4>@(((dynamic)Model.Result.Summary).critic)</h4>
+                                        </div>
+                                    </div>
+                                }
+                                @if (((dynamic)Model.Result.Summary).ridicat > 0)
+                                {
+                                    <div class="col-md-3">
+                                        <div class="alert alert-warning text-center">
+                                            <strong>High</strong>
+                                            <h4>@(((dynamic)Model.Result.Summary).ridicat)</h4>
+                                        </div>
+                                    </div>
+                                }
+                                @if (((dynamic)Model.Result.Summary).mediu > 0)
+                                {
+                                    <div class="col-md-3">
+                                        <div class="alert alert-info text-center">
+                                            <strong>Medium</strong>
+                                            <h4>@(((dynamic)Model.Result.Summary).mediu)</h4>
+                                        </div>
+                                    </div>
+                                }
+                                @if (((dynamic)Model.Result.Summary).scazut > 0)
+                                {
+                                    <div class="col-md-3">
+                                        <div class="alert alert-success text-center">
+                                            <strong>Low</strong>
+                                            <h4>@(((dynamic)Model.Result.Summary).scazut)</h4>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-7">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Code</h4>
+                </div>
+                <div class="card-body p-0">
+                    <div class="bg-light p-3" style="overflow: auto; max-height: 600px;">
+                        <pre><code class="language-csharp">@foreach (var (line, index) in fileLines.Select((line, index) => (line, index + 1)))
+                                {
+                                    bool isVulnerable = Model.Result.Vulnerabilities.Any(v => ((dynamic)v).line_numbers.Contains(index));
+                                    string lineClass = isVulnerable ? "bg-danger text-white" : "";
+
+                            <div id="line-@index" class="@lineClass">@index: @line</div>
+                                }</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Vulnerabilities</h4>
+                </div>
+                <div class="card-body p-0" style="overflow: auto; max-height: 600px;">
+                    @if (Model.Result.TotalVulnerabilities > 0)
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var vuln in Model.Result.Vulnerabilities)
+                            {
+                                dynamic vulnDynamic = vuln;
+                                string riskLevel = Convert.ToString(vulnDynamic.risk_level);
+
+                                // Convert confidence to int percentage without using Math.Round
+                                int confidencePercent = 0;
+                                try
+                                {
+                                    double confidenceValue = Convert.ToDouble(vulnDynamic.confidence);
+                                    confidencePercent = (int)(confidenceValue * 100);
+                                }
+                                catch
+                                {
+                                    // If conversion fails, default to 85%
+                                    confidencePercent = 85;
+                                }
+
+                                <div class="list-group-item">
+                                    <h5>@(vulnDynamic.vulnerability_type)</h5>
+                                    <p class="mb-1">
+                                        <span class="badge @GetRiskBadgeClass(riskLevel)">
+                                            @riskLevel
+                                        </span>
+                                        <span class="ms-2">
+                                            Confidence: @confidencePercent%
+                                        </span>
+                                    </p>
+                                    <p class="mb-1">
+                                        <strong>Lines:</strong>
+                                        @foreach (var lineNum in vulnDynamic.line_numbers)
+                                        {
+                                            <a href="#line-@lineNum" class="badge bg-secondary me-1">@lineNum</a>
+                                        }
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong>Recommendation:</strong><br>
+                                        @(vulnDynamic.recommendation)
+                                    </p>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-success m-3">
+                            No vulnerabilities detected in this file.
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="ScanProject" class="btn btn-primary">Back to Scan Results</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Highlight code (could use highlight.js or similar)
+        document.addEventListener('DOMContentLoaded', function () {
+            // When clicking on a line number link, highlight the corresponding line
+            document.querySelectorAll('.badge').forEach(badge => {
+                badge.addEventListener('click', function (e) {
+                    const lineId = this.getAttribute('href');
+                    const lineElement = document.querySelector(lineId);
+
+                    // Temporarily highlight the line
+                    lineElement.classList.add('bg-warning');
+                    setTimeout(() => {
+                        lineElement.classList.remove('bg-warning');
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+}
+
+@functions {
+    public string GetRiskBadgeClass(string riskLevel)
+    {
+        return riskLevel switch
+        {
+            "Critic" => "bg-danger",
+            "Ridicat" => "bg-warning text-dark",
+            "Mediu" => "bg-info text-dark",
+            "Scăzut" => "bg-success",
+            _ => "bg-secondary"
+        };
+    }
+}

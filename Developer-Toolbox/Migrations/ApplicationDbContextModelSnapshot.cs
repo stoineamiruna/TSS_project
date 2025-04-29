@@ -139,7 +139,9 @@ namespace Developer_Toolbox.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int?>("ReputationPoints")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("0");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -985,8 +987,7 @@ namespace Developer_Toolbox.Migrations
                 {
                     b.HasOne("Developer_Toolbox.Models.LockedExercise", "LockedExercise")
                         .WithMany("LockedSolutions")
-                        .HasForeignKey("LockedExerciseId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("LockedExerciseId");
 
                     b.HasOne("Developer_Toolbox.Models.ApplicationUser", "User")
                         .WithMany()

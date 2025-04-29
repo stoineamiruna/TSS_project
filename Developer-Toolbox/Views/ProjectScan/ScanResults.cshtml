@@ -1,0 +1,152 @@
+﻿@model Developer_Toolbox.Services.CodeScanner.ProjectVulnerabilityReport
+@{
+    ViewData["Title"] = "Project Vulnerability Scan Results";
+}
+
+<div class="container">
+    <h2>Project Vulnerability Scan Results</h2>
+    <p class="text-muted">Scan completed at @Model.ScanTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Scan Summary</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5>Files Scanned</h5>
+                                    <h2>@Model.TotalFilesScanned</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <h5>Total Vulnerabilities</h5>
+                                    <h2>@Model.TotalVulnerabilities</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5>Vulnerabilities by Risk Level</h5>
+                                    <div class="row text-center">
+                                        <div class="col-md-3">
+                                            <div class="alert alert-danger">
+                                                <strong>Critical</strong>
+                                                <h4>@Model.VulnerabilitiesByRiskLevel["Critic"]</h4>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="alert alert-warning">
+                                                <strong>High</strong>
+                                                <h4>@Model.VulnerabilitiesByRiskLevel["Ridicat"]</h4>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="alert alert-info">
+                                                <strong>Medium</strong>
+                                                <h4>@Model.VulnerabilitiesByRiskLevel["Mediu"]</h4>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="alert alert-success">
+                                                <strong>Low</strong>
+                                                <h4>@Model.VulnerabilitiesByRiskLevel["Scazut"]</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3>Vulnerable Files</h3>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>File</th>
+                                <th>Vulnerabilities</th>
+                                <th>Critical</th>
+                                <th>High</th>
+                                <th>Medium</th>
+                                <th>Low</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var fileReport in Model.FileReports.Where(f => f.Result.TotalVulnerabilities > 0).OrderByDescending(f => f.Result.TotalVulnerabilities))
+                            {
+                                <tr>
+                                    <td>@fileReport.RelativePath</td>
+                                    <td>@fileReport.Result.TotalVulnerabilities</td>
+                                    <td>@(((dynamic)fileReport.Result.Summary).critic)</td>
+                                    <td>@(((dynamic)fileReport.Result.Summary).ridicat)</td>
+                                    <td>@(((dynamic)fileReport.Result.Summary).mediu)</td>
+                                    <td>@(((dynamic)fileReport.Result.Summary).scazut)</td>
+                                    <td>
+                                        <a asp-action="ScanFile" asp-route-filePath="@fileReport.FilePath" class="btn btn-sm btn-info">
+                                            Details
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+
+                            @if (!Model.FileReports.Any(f => f.Result.TotalVulnerabilities > 0))
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center">
+                                        <div class="alert alert-success">
+                                            No vulnerabilities detected in any files.
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mt-4">Clean Files</h3>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <p>These files were scanned but no vulnerabilities were detected.</p>
+
+                    <div class="list-group">
+                        @foreach (var fileReport in Model.FileReports.Where(f => f.Result.TotalVulnerabilities == 0).Take(100))
+                        {
+                            <a href="#" class="list-group-item list-group-item-action">
+                                @fileReport.RelativePath
+                                <span class="badge bg-success float-end">Clean</span>
+                            </a>
+                        }
+
+                        @if (Model.FileReports.Count(f => f.Result.TotalVulnerabilities == 0) > 100)
+                        {
+                            <div class="list-group-item text-muted">
+                                ... and @(Model.FileReports.Count(f => f.Result.TotalVulnerabilities == 0) - 100) more clean files
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

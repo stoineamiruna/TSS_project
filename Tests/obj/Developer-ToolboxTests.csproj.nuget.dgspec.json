@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\alexandra\\source\\repos\\software-engineering-product-cache-me-if-you-can\\Tests\\Developer-ToolboxTests.csproj": {}
+    "C:\\Users\\Miru\\Desktop\\TSS\\TSS_project\\Tests\\Developer-ToolboxTests.csproj": {}
   },
   "projects": {
-    "C:\\Users\\alexandra\\source\\repos\\software-engineering-product-cache-me-if-you-can\\Developer-Toolbox\\Developer-Toolbox.csproj": {
+    "C:\\Users\\Miru\\Desktop\\TSS\\TSS_project\\Developer-Toolbox\\Developer-Toolbox.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\alexandra\\source\\repos\\software-engineering-product-cache-me-if-you-can\\Developer-Toolbox\\Developer-Toolbox.csproj",
+        "projectUniqueName": "C:\\Users\\Miru\\Desktop\\TSS\\TSS_project\\Developer-Toolbox\\Developer-Toolbox.csproj",
         "projectName": "Developer-Toolbox",
-        "projectPath": "C:\\Users\\alexandra\\source\\repos\\software-engineering-product-cache-me-if-you-can\\Developer-Toolbox\\Developer-Toolbox.csproj",
-        "packagesPath": "C:\\Users\\alexandra\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\alexandra\\source\\repos\\software-engineering-product-cache-me-if-you-can\\Developer-Toolbox\\obj\\",
+        "projectPath": "C:\\Users\\Miru\\Desktop\\TSS\\TSS_project\\Developer-Toolbox\\Developer-Toolbox.csproj",
+        "packagesPath": "C:\\Users\\Miru\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Miru\\Desktop\\TSS\\TSS_project\\Developer-Toolbox\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\alexandra\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Miru\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -49,6 +49,10 @@
               "target": "Package",
               "version": "[3.1.1, )"
             },
+            "EntityFramework": {
+              "target": "Package",
+              "version": "[6.5.1, )"
+            },
             "Hangfire.AspNetCore": {
               "target": "Package",
               "version": "[1.8.17, )"
@@ -74,6 +78,10 @@
               "version": "[6.0.35, )"
             },
             "Microsoft.AspNetCore.Identity.UI": {
+              "target": "Package",
+              "version": "[6.0.35, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[6.0.35, )"
             },
@@ -103,6 +111,10 @@
               "target": "Package",
               "version": "[4.18.2, )"
             },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.5.0, )"
+            },
             "xunit": {
               "target": "Package",
               "version": "[2.8.0, )"
@@ -122,19 +134,19 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[6.0.29, 6.0.29]"
+              "version": "[6.0.36, 6.0.36]"
             },
             {
               "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[6.0.29, 6.0.29]"
+              "version": "[6.0.36, 6.0.36]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[6.0.29, 6.0.29]"
+              "version": "[6.0.36, 6.0.36]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[6.0.29, 6.0.29]"
+              "version": "[6.0.36, 6.0.36]"
             }
           ],
           "frameworkReferences": {
@@ -145,21 +157,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.407\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\alexandra\\source\\repos\\software-engineering-product-cache-me-if-you-can\\Tests\\Developer-ToolboxTests.csproj": {
+    "C:\\Users\\Miru\\Desktop\\TSS\\TSS_project\\Tests\\Developer-ToolboxTests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\alexandra\\source\\repos\\software-engineering-product-cache-me-if-you-can\\Tests\\Developer-ToolboxTests.csproj",
+        "projectUniqueName": "C:\\Users\\Miru\\Desktop\\TSS\\TSS_project\\Tests\\Developer-ToolboxTests.csproj",
         "projectName": "Developer-ToolboxTests",
-        "projectPath": "C:\\Users\\alexandra\\source\\repos\\software-engineering-product-cache-me-if-you-can\\Tests\\Developer-ToolboxTests.csproj",
-        "packagesPath": "C:\\Users\\alexandra\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\alexandra\\source\\repos\\software-engineering-product-cache-me-if-you-can\\Tests\\obj\\",
+        "projectPath": "C:\\Users\\Miru\\Desktop\\TSS\\TSS_project\\Tests\\Developer-ToolboxTests.csproj",
+        "packagesPath": "C:\\Users\\Miru\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Miru\\Desktop\\TSS\\TSS_project\\Tests\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\alexandra\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Miru\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -173,8 +185,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\Users\\alexandra\\source\\repos\\software-engineering-product-cache-me-if-you-can\\Developer-Toolbox\\Developer-Toolbox.csproj": {
-                "projectPath": "C:\\Users\\alexandra\\source\\repos\\software-engineering-product-cache-me-if-you-can\\Developer-Toolbox\\Developer-Toolbox.csproj"
+              "C:\\Users\\Miru\\Desktop\\TSS\\TSS_project\\Developer-Toolbox\\Developer-Toolbox.csproj": {
+                "projectPath": "C:\\Users\\Miru\\Desktop\\TSS\\TSS_project\\Developer-Toolbox\\Developer-Toolbox.csproj"
               }
             }
           }
@@ -194,11 +206,19 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "EntityFramework": {
+              "target": "Package",
+              "version": "[6.5.1, )"
+            },
             "Microsoft.AspNet.Identity.EntityFramework": {
               "target": "Package",
               "version": "[2.2.4, )"
             },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.35, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[6.0.35, )"
             },
@@ -238,20 +258,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[6.0.29, 6.0.29]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[6.0.29, 6.0.29]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[6.0.29, 6.0.29]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"

@@ -12,6 +12,9 @@ using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.Extensions.Configuration;
 using DotNetEnv;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Developer_Toolbox.Services.CodeScanner;
+using Developer_Toolbox.Services.Vulnerability;
+using YourApp.Services.CodeScanner;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +36,11 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient();  // Register HttpClient for compiler
+// Register the VulnerabilityService
+builder.Services.AddScoped<IVulnerabilityService, VulnerabilityService>();
+
+// Register the CodeScannerService
+builder.Services.AddScoped<ICodeScannerService, CodeScannerService>();
 
 builder.Services.AddScoped<ITagRepository, TagRepository>(); 
 builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
@@ -87,6 +95,8 @@ builder.Services.AddScoped<IEmailService>(sp =>
 builder.Services.AddScoped<IEmailSender>(sp =>
     sp.GetRequiredService<IEmailService>() as IEmailSender);
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -101,6 +111,8 @@ using (var scope = app.Services.CreateScope())
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 else
 {
