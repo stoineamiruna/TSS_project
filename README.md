@@ -374,7 +374,98 @@ Pentru a extinde capabilitățile instrumentului, putem:
 
 În această implementare, am combinat cu succes abordarea bazată pe reguli cu tehnici de Machine Learning, reușind să construim un instrument practic care ilustrează conceptul teoretic de VulnRISKatcher prezentat în articolul științific.
 
+## d. Implementarea celui de-al treilea modul -- CodeAssert
 
+**Scopul Modulului**
+
+Modulul CodeAssert, parte a framework-ului **TestLab**, vizează **generarea automată de teste unitare pentru clase model** pe baza analizei codului sursă (white-box testing). Acest PoC automatizează:
+* extragerea de proprietăți din modele,
+* detecția atributele de validare,
+* generarea fișierelor `.cs` cu teste unitare folosind xUnit.
+
+---
+
+## **Fluxul Fișierelor și Componentelor**
+
+### 1. `Program.cs` – **Coordonatorul**
+
+* Definește directoarele sursă și output.
+* Filtrează modelele relevante ignorând unele entități specifice.
+* Pentru fiecare model:
+  * extrage namespace-ul și proprietățile
+  * generează fișierul de test corespunzător
+
+**Exemplu Output:** `BadgeModel.cs -> BadgeModelUnitTest.cs`
+
+---
+
+### 2. `ModelAnalyzer.cs` – **Extractorul de Proprietati**
+
+* Identifică proprietățile unei clase.
+* Recunoaște colecții (`List<T>`, `IEnumerable<T>`, etc.).
+* Generează valori implicite pentru fiecare tip.
+* Detectează atribute de validare (`[Required]`, `[StringLength]`, etc.).
+
+---
+
+### 3. `CodeAnalysisService.cs` – **Namespace & Condiții**
+
+* Extragerea namespace-ului.
+* Extragerea conditiilor.
+
+---
+
+### 4. `TestTemplateGenerator.cs` – **Generatorul de Cod de Test**
+
+* Creează clase `xUnit` cu:
+  * test pentru constructor,
+  * test pentru inițializarea proprietăților,
+  * test pentru validări (`Required`, `StringLength`, etc.).
+
+**Exemplu de test generat:**
+
+```csharp
+[Fact]
+public void Constructor_Test()
+{
+    var user = new User();
+    Assert.NotNull(user);
+    Assert.IsType<User>(user);
+}
+```
+
+### Procesarea modelelor si generarea de teste, folosind `TestTemplateGenerator.cs`
+![Procesarea modelelor si generarea de teste](./media/teste_generate.png)
+
+---
+
+## **Rezultate**
+
+După generarea automată a testelor, acestea sunt rulate pentru a valida integritatea procesului. Testele se execută rapid și confirmă acoperirea modelelor și a validărilor aferente.
+
+### Toate testele au trecut cu succes
+
+Imaginea de mai jos arată execuția a 171 de teste. Toate au trecut, fără erori sau skip-uri:
+
+![Rezultate si Validare](./media/rezultate_teste.png)
+
+---
+
+## **Ce respecta implementarea modulului, fata de articol**
+
+* Automatizare completă pentru testele de bază.
+* Ignorare fișiere irelevante -> reduce zgomotul.
+* Tratament special pentru colecții.
+* Suport pentru atribute de validare (inclusiv verificarea cu reflecție).
+* Se integrează ușor în CI pentru generare continuă de teste.
+
+---
+
+## **Îmbunătățiri Viitoare ale modulului**
+
+1. **Testarea pentru tipuri complexe**
+2. **Integrarea cu Expected Values AI/NLP**
+3. **Suport pentru alte frameworkuri de test (NUnit, MSTest)**
 
 ## 5. Concluzii
 
