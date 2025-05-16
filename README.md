@@ -13,7 +13,7 @@ Antonescu Ionut-Andrei
 
 [Prezentare TestLab](TSS-testlab.pdf)
 
-[Documentatie (format pdf)](Documentatie_finala.pdf)  (este echivalentul pdf al acestui ReadMe)
+[Documentatie](Documentatie_finala.pdf)  (este echivalentul pdf al acestui ReadMe)
 
 [Raport despre folosirea unui tool de AI](Raport_despre_folosirea_unui_tool_de_AI.pdf)
 
