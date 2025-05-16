@@ -1,11 +1,22 @@
 # Raport: Concepte și metode din articolul  
-**„TestLab: An Intelligent Automated Software Testing Framework” [1]**
+## **„TestLab: An Intelligent Automated Software Testing Framework” [1]**
 
 **Autori:**  
 Stoinea Maria Miruna  
 Nazare Elena-Denisa  
 Ciurescu Irina Alexandra  
 Antonescu Ionut-Andrei
+
+---
+
+[DEMO](https://youtu.be/ppFEI5dOFXI)
+
+[Prezentare TestLab](TSS-testlab.pdf)
+
+[Documentatie (format pdf)](Documentatie_finala.pdf)  (este echivalentul pdf al acestui ReadMe)
+
+[Raport despre folosirea unui tool de AI]()
+
 
 ---
 
@@ -264,7 +275,7 @@ Am ales să folosim modele de pe HuggingFace și astfel am găsit modelul *micro
 
 1. *mahdin70/CodeBERT-VulnCWE* - antrenat pe un set de date curatoriat și îmbogățit pentru detectarea vulnerabilităților și clasificarea CWE. Modelul poate prezice dacă un fragment de cod este vulnerabil și, în caz afirmativ, poate identifica ID-ul CWE specific asociat. (părea o variantă promițătoare, dar am avut probleme cu importarea acestuia, deci am fost nevoiți să renunțăm)
 
-2. *mrm8488/codebert-base-finetuned-detect-insecure-code* - Modelul analizează secvențe de cod sursă pentru a determina dacă acestea conțin vulnerabilități de securitate (precum scurgeri de resurse sau atacuri DoS), clasificându-le binar ca sigure (0) sau nesigure (1). (deși ne oferă doar o clasificare binară a erorilor, acest model s-a dovedit a fi o variantă mai sigură și cu care am reușit să lucrăm)
+2. *mrm8488/codebert-base-finetuned-detect-insecure-code* [5] - Modelul analizează secvențe de cod sursă pentru a determina dacă acestea conțin vulnerabilități de securitate (precum scurgeri de resurse sau atacuri DoS), clasificându-le binar ca sigure (0) sau nesigure (1). (deși ne oferă doar o clasificare binară a erorilor, acest model s-a dovedit a fi o variantă mai sigură și cu care am reușit să lucrăm)
 
 Deși modelul oferă doar o clasificare binară (cod sigur vs. cod nesigur), l-am integrat într-o analiză mai nuanțată. Pentru a face analiza mai detaliată, am implementat:
 
@@ -482,7 +493,7 @@ Pentru a extinde capabilitățile instrumentului, putem:
 
 În această implementare, am combinat cu succes abordarea bazată pe reguli cu tehnici de Machine Learning, reușind să construim un instrument practic care ilustrează conceptul teoretic de VulnRISKatcher prezentat în articolul științific.
 
-## d. Implementarea celui de-al treilea modul -- CodeAssert
+## d. Implementarea celui de-al treilea modul -- CodeAssert  [6],[7]
 
 **Scopul Modulului**
 
@@ -584,15 +595,27 @@ Imaginea de mai jos arată execuția a 171 de teste. Toate au trecut, fără ero
 - Detectarea timpurie a erorilor
 - Automatizare extinsă → reducerea efortului uman
 
+Prin realizarea acestui proiect, am conștientizat atât importanța esențială a testării sistemelor software, cât și complexitatea reală a implementării ei eficiente în practică.
+
+Un instrument avansat, precum cel propus în articolul studiat, ar putea aduce un aport semnificativ în creșterea calității aplicațiilor. Totuși, pe lângă eficiența sa tehnică, un aspect esențial îl constituie ușurința în utilizare – astfel de unelte trebuie să fie accesibile tuturor dezvoltatorilor, indiferent de nivelul lor de experiență.
+
+Deși am implementat modulele într-o formă simplificată, cu scop demonstrativ, utilizarea lor concretă în cadrul aplicației ne-a evidențiat relevanța și necesitatea acestor mecanisme în procesul de testare automatizată.
+
 ---
 
 ## 6. Referințe
 
-[1] Dias, T., Batista, A., Maia, E., & Praça, I. (2023). *TestLab: An Intelligent Automated Software Testing Framework*. Research Group on Intelligent Engineering and Computing for Advanced Innovation and Development (GECAD), ISEP, Porto.
+[1] TestLab: An Intelligent Automated Software Testing Framework, Tiago Dias, Arthur Batista, Eva Maia, Isabel Praça , https://arxiv.org/abs/2306.03602, Ultima accesare: 16 mai 2025
 
 [2] „The prevalence of software systems has become an integral part of modern-day living.” / „Software usage has increased significantly, leading to its growth in both size and complexity.” / „Consequently, software development is becoming a more time-consuming process.” – din articolul TestLab
 
 [3] „The integration of Artificial Intelligence (AI) in the software testing process is promising...” / „...no prior work has addressed the development of a comprehensive framework comprising multiple testing methods...” – din articolul TestLab
 
-[4] Microsoft RESTler: Stateful REST API Fuzzing Tool
+[4] Microsoft RESTler: Stateful REST API Fuzzing Tool, https://www.microsoft.com/en-us/research/publication/restler-stateful-rest-api-fuzzing/, Accesat: 15 mai 2025
+
+[5] codebert-base-finetuned-detect-insecure-code, https://huggingface.co/mrm8488/codebert-base-finetuned-detect-insecure-code, Data ultimei accesari: 25 aprilie 2025
+
+[6] Roslyn: .NET Compiler Platform Microsoft. Roslyn - .NET Compiler Platform SDK. https://github.com/dotnet/roslyn , Data ultimei accesari: 12 mai 2025
+
+[7] xUnit Testing Framework Brad Wilson et al. xUnit.net Documentation. https://xunit.net/,Data ultimei accesari: 12 mai 2025
 
