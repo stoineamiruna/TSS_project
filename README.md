@@ -125,6 +125,97 @@ Validarea funcționalităților aplicației: logare, gestionare întrebări/răs
 
 RESTler eficientizează testarea automată a API-urilor REST și poate identifica vulnerabilități greu de descoperit manual.
 
+## Pașii de utilizare RESTler:
+1. compile – Generează testele din Swagger
+  - Citește swagger.json
+  - Creează un fișier grammar.py cu toate endpointurile
+  - Asociază parametri, metode, body-uri
+
+2. fuzz – Rulează testele
+  - Trimite automat cereri către API (inclusiv date eronate)
+  - Încearcă combinații diferite
+  - Înregistrează coduri de răspuns, crash-uri, secvențe valide
+
+Opțional:
+3. analyze – Analizează rezultatele
+  - Detectează ce requesturi au eșuat (ex: 404, 500)
+  - Generează rapoarte (loguri, acoperire, bug-uri)
+
+În vederea realizării primului pas, acela de compile, am avut nevoie mai întâi să generăm, utilizând Swagger, fișierul Swagger.json.
+### Ce este Swagger?
+Swagger este un format standard pentru descrierea unui API REST. Fișierul "swagger.json" este generat automat prin intermediul framework-ului ASP.NER Core și conține:
+ - toate endpoint-urile unui API (GET, POST, etc.)
+ - ce parametri sunt acceptați
+ - ce tipuri de dare returnează
+ - cum trebuie să arate un request activ
+   
+Generarea automată de către documentație cu ajutorul Swagger se realizează prin introducerea a două comenzi în fișierul Program.cs:
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+și
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+Pentru ca Swagger să poată detecta automat rutele și să realizeze maparea API-urilor, are nevoie de controllere speciale care să definească clar endpoint-urile cu ajutorul atributelor .NET (ex. [ApiController], [HttpGet] ..), trebuie să extindă clasa ControllerBase (nu Controller) și să expună metode care returnează JSON / IActionResult, nu Views.
+Astfel, pentru a putea utiliza tool-ul, am creat un controller special de test numit "CategoriesApiController.cs". Iar odată cu realizarea acestui controller special, am putut accesa fișierul swagger autogenerat (https://localhost:{port}/swagger/v1/swagger.json) cât și o vizualizare interactivă a rutelor (https://localhost:{port}/swagger).
+
+După obținerea fișierului Swagger, am executat următorii pași:
+## Generarea gramaticii de test
+```bash
+dotnet restler\Restler.dll compile --api_spec "C:\Users\Miru\Desktop\TSS\swagger1.json" 
+```
+
+### Ce face:
+* Preia fișierul `swagger1.json` (definiția API-ului)
+* Generează un set de fișiere în folderul `Compile\`:
+
+  * `grammar.py`: modelul de cereri (requests) pe care le poate face RESTler
+  * `dict.json`: un dicționar cu valori implicite pentru câmpuri
+  * `engine_settings.json`: setări pentru engine-ul de testare
+
+## Task Collection (`test`):
+
+```bash
+dotnet "C:\Users\Miru\Desktop\TSS\restler-fuzzer\restler_bin\restler\Restler.dll" test ^
+--grammar_file "C:\Users\Miru\Desktop\TSS\restler-fuzzer\restler_bin\Compile\grammar_fixed.py" ^
+--dictionary_file "C:\Users\Miru\Desktop\TSS\restler-fuzzer\restler_bin\Compile\dict.json" ^
+--host "localhost" ^
+--target_port 7121 
+```
+
+### Ce face:
+
+* Rulează cereri valide (conforme cu Swagger) pentru a identifica:
+  * dacă endpoint-urile răspund corect
+  * ce combinații de input-uri funcționează
+* Creează un „baseline” de funcționare: RESTler învață care cereri sunt valide.
+
+---
+
+## Fuzzing (`fuzz`)
+
+```bash
+dotnet "C:\Users\Miru\Desktop\TSS\restler-fuzzer\restler_bin\restler\Restler.dll" fuzz ^
+--grammar_file "C:\Users\Miru\Desktop\TSS\restler-fuzzer\restler_bin\Compile\grammar_fixed.py" ^
+--dictionary_file "C:\Users\Miru\Desktop\TSS\restler-fuzzer\restler_bin\Compile\dict.json" ^
+--host "localhost" ^
+--target_port 7121
+```
+
+### Ce face:
+
+* Rulează testele generate automat, dar:
+  * Include mutații (valori invalide, lipsă, excesive)
+  * Testează comportamentul API-ului la cereri **neobișnuite** sau malformate
+* Scopul este să detecteze **bug-uri, crash-uri, excepții necontrolate sau cod HTTP neașteptat (500, 403 etc.)**
+* Stochează rezultatele în folderul `RestlerResults/<data>`:
+  * `bug_buckets.txt`: dacă a găsit bug-uri
+  * `network.testing.log`: log complet al cererilor
+  * `fuzzing_summary.md`: rezumat
+
 ---
 
 ## c. Implementarea celui de-al doilea modul -- VulnRISKatcher
