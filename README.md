@@ -130,14 +130,19 @@ RESTler eficientizează testarea automată a API-urilor REST și poate identific
   - Citește swagger.json
   - Creează un fișier grammar.py cu toate endpointurile
   - Asociază parametri, metode, body-uri
-
-2. fuzz – Rulează testele
+    
+2. test - Testarea cu ajutorul gramaticii modificate a rutelor
+   *Pentru a putea rula testele:
+  - Modificăm noi mai întâi grammar.py, deoarece cel autogenerat funcționează mai mult ca și template
+  - Ne asigurăm că baza de dare corespune pentru teste
+    
+3. fuzz – Rulează testele
   - Trimite automat cereri către API (inclusiv date eronate)
   - Încearcă combinații diferite
   - Înregistrează coduri de răspuns, crash-uri, secvențe valide
 
 Opțional:
-3. analyze – Analizează rezultatele
+4. analyze – Analizează rezultatele
   - Detectează ce requesturi au eșuat (ex: 404, 500)
   - Generează rapoarte (loguri, acoperire, bug-uri)
 
@@ -149,21 +154,29 @@ Swagger este un format standard pentru descrierea unui API REST. Fișierul "swag
  - ce tipuri de dare returnează
  - cum trebuie să arate un request activ
    
-Generarea automată de către documentație cu ajutorul Swagger se realizează prin introducerea a două comenzi în fișierul Program.cs:
+Generarea automată de către documentație cu ajutorul Swagger se realizează prin introducerea a următoarelor comenzi în fișierul Program.cs:
+```C#
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-și
+...
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+```
 
 Pentru ca Swagger să poată detecta automat rutele și să realizeze maparea API-urilor, are nevoie de controllere speciale care să definească clar endpoint-urile cu ajutorul atributelor .NET (ex. [ApiController], [HttpGet] ..), trebuie să extindă clasa ControllerBase (nu Controller) și să expună metode care returnează JSON / IActionResult, nu Views.
 Astfel, pentru a putea utiliza tool-ul, am creat un controller special de test numit "CategoriesApiController.cs". Iar odată cu realizarea acestui controller special, am putut accesa fișierul swagger autogenerat (https://localhost:{port}/swagger/v1/swagger.json) cât și o vizualizare interactivă a rutelor (https://localhost:{port}/swagger).
 
-După obținerea fișierului Swagger, am executat următorii pași:
-## Generarea gramaticii de test
+Fișierul "swagger.json" poate fi vizualizat [aici](fuzzing_part_images/swagger.json).
+
+Pagina de vizualizare Swagger din browser:
+![Swagger UI 1](fuzzing_part_images/swagger_index1.png)
+![Swagger UI 1](fuzzing_part_images/swagger_index2.png)
+
+După obținerea fișierului Swagger, am executat pașii de utlilizare RESTler, menționați mai sus:
+## 1) Generarea gramaticii de test
 ```bash
 dotnet restler\Restler.dll compile --api_spec "C:\Users\Miru\Desktop\TSS\swagger1.json" 
 ```
@@ -176,7 +189,9 @@ dotnet restler\Restler.dll compile --api_spec "C:\Users\Miru\Desktop\TSS\swagger
   * `dict.json`: un dicționar cu valori implicite pentru câmpuri
   * `engine_settings.json`: setări pentru engine-ul de testare
 
-## Task Collection (`test`):
+![Dovada compilare](fuzzing_part_images/compine_ss.png)
+
+## 2) Task Collection (`test`):
 
 ```bash
 dotnet "C:\Users\Miru\Desktop\TSS\restler-fuzzer\restler_bin\restler\Restler.dll" test ^
@@ -193,9 +208,9 @@ dotnet "C:\Users\Miru\Desktop\TSS\restler-fuzzer\restler_bin\restler\Restler.dll
   * ce combinații de input-uri funcționează
 * Creează un „baseline” de funcționare: RESTler învață care cereri sunt valide.
 
----
+![Rulare teste](fuzzing_part_images/working_test.png)
 
-## Fuzzing (`fuzz`)
+## 3) Fuzzing (`fuzz`)
 
 ```bash
 dotnet "C:\Users\Miru\Desktop\TSS\restler-fuzzer\restler_bin\restler\Restler.dll" fuzz ^
@@ -215,6 +230,8 @@ dotnet "C:\Users\Miru\Desktop\TSS\restler-fuzzer\restler_bin\restler\Restler.dll
   * `bug_buckets.txt`: dacă a găsit bug-uri
   * `network.testing.log`: log complet al cererilor
   * `fuzzing_summary.md`: rezumat
+
+![Rulare fuzzing](fuzzing_part_images/working_fuzzer.png)
 
 ---
 
