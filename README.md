@@ -134,7 +134,7 @@ RESTler eficientizează testarea automată a API-urilor REST și poate identific
 2. test - Testarea cu ajutorul gramaticii modificate a rutelor
    *Pentru a putea rula testele:
   - Modificăm noi mai întâi grammar.py, deoarece cel autogenerat funcționează mai mult ca și template
-  - Ne asigurăm că baza de dare corespune pentru teste
+  - Ne asigurăm că baza de date corespunde pentru teste
     
 3. fuzz – Rulează testele
   - Trimite automat cereri către API (inclusiv date eronate)
